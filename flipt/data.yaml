@@ -1,0 +1,15 @@
+# exported by Flipt (1.13.0) on 2022-11-14T11:37:33Z
+
+flags:
+- key: traffic-price
+  name: Traffic Price
+  description: Flow an endpoint traffic to new endpoint
+  enabled: false
+- key: traffic-ticker
+  name: Traffic Ticker
+  description: Flow an endpoint traffic to new endpoint
+  enabled: false
+- key: traffic-strategy
+  name: Traffic Strategy
+  description: Flow an endpoint traffic to new endpoint
+  enabled: false

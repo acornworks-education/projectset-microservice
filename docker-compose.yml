@@ -1,0 +1,33 @@
+version: "3.6"
+
+services:
+  monolith:
+    build: .
+    ports:
+      - "65080:65080"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+  database:
+    image: postgres:14.5
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd
+    ports:
+    - "65432:5432"
+    volumes:
+    - "./db/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
+  flyway:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+  featuretoggle:
+    image: flipt/flipt:latest
+    ports:
+      - "64080:8080"
+    volumes:
+      - "./flipt:/var/opt/flipt"    
+    environment:
+      FLIPT_DB_URL: postgres://postgres:P@ssw0rd@database:5432/postgres?sslmode=disable
+    depends_on:
+      - database
