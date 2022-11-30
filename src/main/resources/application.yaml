@@ -27,3 +27,5 @@ featuretoggle:
     price: traffic-price
     ticker: traffic-ticker
     strategy: traffic-strategy
+microservice:
+  ticker: http://localhost:65010/ticker
