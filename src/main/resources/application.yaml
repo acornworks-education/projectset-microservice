@@ -27,3 +27,8 @@ featuretoggle:
     price: traffic-price
     ticker: traffic-ticker
     strategy: traffic-strategy
+microservice:
+  ticker: http://localhost:65010/ticker
+  price: http://localhost:65020/price
+opentracing.jaeger.http-sender.url: http://localhost:14268/api/traces
+logging.level.org.springframework.web.servlet.DispatcherServlet: DEBUG

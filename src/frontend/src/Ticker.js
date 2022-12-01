@@ -10,7 +10,7 @@ function Ticker() {
     const urlPrefix = !!process.env.REACT_APP_ENDPOINT ? process.env.REACT_APP_ENDPOINT : 'http://localhost:65080';
 
     const getTickerList = () => {
-        fetch(`${urlPrefix}/ticker/list`).then((resp) => resp.json()).then(data => {
+        fetch(`${urlPrefix}/ticker/list?timestamp=${new Date()}`).then((resp) => resp.json()).then(data => {
             setTickers(data);
         });
     };
