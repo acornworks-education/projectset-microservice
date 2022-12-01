@@ -5,9 +5,11 @@ import java.util.Calendar;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SpotData {
     private String ticker;
     private BigDecimal price;
