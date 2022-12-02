@@ -32,3 +32,11 @@ services:
       FLIPT_DB_URL: postgres://postgres:P@ssw0rd@database:5432/postgres?sslmode=disable
     depends_on:
       - database
+  jaeger:
+    image: jaegertracing/all-in-one:1.38
+    ports:
+      - "14268:14268"
+      - "16686:16686"
+networks:
+  default:
+    name: projectset
