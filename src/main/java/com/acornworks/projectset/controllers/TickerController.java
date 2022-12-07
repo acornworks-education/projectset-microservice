@@ -52,24 +52,15 @@ public class TickerController {
 
     @GetMapping("/list")
     public List<Ticker> getTickerList() {
-        if (featureToggle.getFeature(toggleKey)) {
-            final String callUrl = String.format("%s/list", tickerUrl);
-            logger.info("getTickerList Call URL: {}", callUrl);
-            ResponseEntity<Ticker[]> response = restTemplate.getForEntity(callUrl, Ticker[].class);
+        final String callUrl = String.format("%s/list", tickerUrl);
+        logger.info("getTickerList Call URL: {}", callUrl);
+        ResponseEntity<Ticker[]> response = restTemplate.getForEntity(callUrl, Ticker[].class);
 
-            return Arrays.asList(response.getBody());
-        } else {
-            final List<Ticker> tickerList = new ArrayList<>();
-            
-            tickerRepository.findAll().iterator().forEachRemaining(tickerList::add);
-
-            return tickerList;
-        }
+        return Arrays.asList(response.getBody());
     }
     
     @PostMapping("")
     public Ticker addTicker(@RequestBody String iptJsonStr) throws Exception {
-        // FIXME Refactor feature toggle
         final JsonNode inputNode = objectMapper.readTree(iptJsonStr);
 
         final String ticker = inputNode.get("ticker") != null ? inputNode.get("ticker").asText() : null;
@@ -77,19 +68,12 @@ public class TickerController {
 
         if (ticker != null && name != null) {
             final Ticker tickerObj = new Ticker(ticker, name);
+            HttpEntity<Ticker> requestEntity = new HttpEntity<>(tickerObj);
 
-            if (featureToggle.getFeature(toggleKey)) {
-                HttpEntity<Ticker> requestEntity = new HttpEntity<>(tickerObj);
+            logger.info("addTicker Call URL: {}", tickerUrl);
+            ResponseEntity<Ticker> response = restTemplate.exchange(tickerUrl, HttpMethod.POST, requestEntity, Ticker.class);
 
-                logger.info("addTicker Call URL: {}", tickerUrl);
-                ResponseEntity<Ticker> response = restTemplate.exchange(tickerUrl, HttpMethod.POST, requestEntity, Ticker.class);
-
-                return response.getBody();
-            } else {
-                final Ticker savedTicker = tickerRepository.save(tickerObj);
-
-                return savedTicker;    
-            }
+            return response.getBody();
         } else {
             throw new InvalidAttributeValueException("KEY_TICKER_NAME_SHOULD_BE_DEFINED");
         }
@@ -102,19 +86,13 @@ public class TickerController {
         final String ticker = inputNode.get("ticker") != null ? inputNode.get("ticker").asText() : null;
 
         if (ticker != null) {
-            if (featureToggle.getFeature(toggleKey)) {                
-                final Ticker tickerObj = new Ticker(ticker, "");
-                HttpEntity<Ticker> requestEntity = new HttpEntity<>(tickerObj);
+            final Ticker tickerObj = new Ticker(ticker, "");
+            HttpEntity<Ticker> requestEntity = new HttpEntity<>(tickerObj);
 
-                logger.info("removeTicker Call URL: {}", tickerUrl);
-                ResponseEntity<Ticker> response = restTemplate.exchange(tickerUrl, HttpMethod.DELETE, requestEntity, Ticker.class);
+            logger.info("removeTicker Call URL: {}", tickerUrl);
+            ResponseEntity<Ticker> response = restTemplate.exchange(tickerUrl, HttpMethod.DELETE, requestEntity, Ticker.class);
 
-                return response.getBody();
-            } else {
-                tickerRepository.deleteById(ticker);
-                final Ticker deletedTicker = new Ticker(ticker, "");
-                return deletedTicker;
-            }
+            return response.getBody();
         } else {
             throw new InvalidAttributeValueException("KEY_TICKER_SHOULD_BE_DEFINED");
         }

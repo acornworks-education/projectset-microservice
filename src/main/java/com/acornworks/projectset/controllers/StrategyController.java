@@ -48,18 +48,10 @@ public class StrategyController {
 
     @GetMapping(value = "/{symbol}/{strategy}", produces = "application/json")
     public TradingResult getAnalysis(@PathVariable("symbol") String symbol, @PathVariable("strategy") String strategyStr) throws IOException, CsvException, ParseException {
-        // FIXME Refactor feature toggle
-        if (featureToggle.getFeature(toggleKey)) {            
-            final String callUrl = String.format("%s/%s/%s", strategyUrl, symbol, strategyStr);
-            logger.info("Call URL for getAnalysis: {}", callUrl);
+        final String callUrl = String.format("%s/%s/%s", strategyUrl, symbol, strategyStr);
+        logger.info("Call URL for getAnalysis: {}", callUrl);
 
-            return restTemplate.getForObject(callUrl, TradingResult.class);
-        } else {
-            final StrategyName strategy = StrategyName.valueOf(strategyStr);
-            final List<StockPrice> stockPrices = historicalDataProcessor.getHisoricalPrice(symbol);
-
-            return strategyProcessor.getAnalysisResult(stockPrices, strategy);
-        }
+        return restTemplate.getForObject(callUrl, TradingResult.class);
     }
 
     
