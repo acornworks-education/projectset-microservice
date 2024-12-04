@@ -88,6 +88,8 @@ public class HistoricalDataProcessor {
                 final Calendar dateCal = Calendar.getInstance();
                 dateCal.setTime(formatter.parse(lineStrs[0]));
 
+                if (lineStrs[1].equals("null")) continue;
+
                 returnList.add(new StockPrice(
                     symbol, 
                     dateCal, 

@@ -45,31 +45,21 @@ public class PriceController {
 
     @GetMapping(value = "/spot/{symbol}", produces = "application/json")
     public SpotData getSpotPrice(@PathVariable("symbol") String symbol) {
-        // FIXME Refactor feature toggle
-        if (featureToggle.getFeature(toggleKey)) {
-            final String callUrl = String.format("%s/spot/%s", priceUrl, symbol);
-            logger.info("Call URL for getSpotPrice: {}", callUrl);
+        final String callUrl = String.format("%s/spot/%s", priceUrl, symbol);
+        logger.info("Call URL for getSpotPrice: {}", callUrl);
 
-            final SpotData responseData = restTemplate.getForObject(callUrl, SpotData.class);
+        final SpotData responseData = restTemplate.getForObject(callUrl, SpotData.class);
 
-            return responseData;
-        } else {
-            return processor.getPrice(symbol);
-        }
+        return responseData;
     }
 
     @GetMapping(value = "/historical/{symbol}", produces = "application/json")
     public List<StockPrice> getHistoricalPrices(@PathVariable("symbol") String symbol) throws IOException, CsvException, ParseException {
-        // FIXME Refactor feature toggle
-        if (featureToggle.getFeature(toggleKey)) {
-            final String callUrl = String.format("%s/historical/%s", priceUrl, symbol);
-            logger.info("Call URL for getHistoricalPrices: {}", callUrl);
+        final String callUrl = String.format("%s/historical/%s", priceUrl, symbol);
+        logger.info("Call URL for getHistoricalPrices: {}", callUrl);
 
-            ResponseEntity<StockPrice[]> response = restTemplate.getForEntity(callUrl, StockPrice[].class);
+        ResponseEntity<StockPrice[]> response = restTemplate.getForEntity(callUrl, StockPrice[].class);
 
-            return Arrays.asList(response.getBody());
-        } else {
-            return processor.getHisoricalPrice(symbol);
-        }
+        return Arrays.asList(response.getBody());
     }    
 }
